@@ -1,11 +1,7 @@
 import numpy as np
-
+from sklearn.cluster import SpectralClustering
+import sompy
 
 def MySpectral(Im, ImType, NumClusts):
-    ClusterIm, CCIm = 0
-    if ImType == 'Hyper':
-        CCIm = 0
-    r, c = Im.shape[0: 2]
-    print(r)
-    print(c)
-    return ClusterIm, CCIm
+    ClusterIm = 0
+    return ClusterIm
