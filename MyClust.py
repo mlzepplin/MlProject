@@ -1,5 +1,8 @@
 import scipy.io as sio
 import numpy as np
+from cv2 import medianBlur
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 
 from MyFCM import MyFCM
 from MyKmeans import MyKmeans
@@ -16,6 +19,11 @@ def MyClust(Im, Algorithm, ImType, NumClusts):
     elif NumClusts <= 1:
         NumClusts = 0.05 * N
 
+    if ImType == 'Hyper':  # TODO: PCA, the Parameters need to change
+        Im = PCA(n_components=None)
+
+    Im = medianBlur(Im, 15)
+
     if Algorithm == 'Kmeans':
         ClusterIm = MyKmeans(Im, ImType, NumClusts)
     elif Algorithm == 'SOM':
@@ -29,6 +37,9 @@ def MyClust(Im, Algorithm, ImType, NumClusts):
     else:
         print("Wrong Algorithm Input")
 
+    plt.imshow(ClusterIm)
+    plt.show()
+
     if ImType == 'RGB':
         CCIm = np.zeros((r, c))
         return ClusterIm, CCIm
@@ -40,7 +51,7 @@ if __name__ == '__main__':
     matfn = 'ImsAndTruths2092.mat'
     data = sio.loadmat(matfn)
     Im = data['Im']
-    Algorithm = 'FCM'  # raw_input("Algorithm = ")
-    ImType = 'RGB'  # raw_input("ImType = ")
-    NumClusts = 4  # int(input("NumClusts = "))
+    Algorithm = raw_input("Algorithm = ")
+    ImType = raw_input("ImType = ")
+    NumClusts = int(input("NumClusts = "))
     ClusterIm, CCIm = MyClust(Im, Algorithm, ImType, NumClusts)
