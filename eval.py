@@ -80,9 +80,11 @@ def MyMaritnIndex(ImageType,LabelImage, GroundTruth):
     else:
         return MyClustEvalHyper10(LabelImage,GroundTruth)
 
-
-def dispatchForEval321(ImageType,ImageSet, seg1_321,seg2_321,seg3_321):
-    
+############################################
+#FOR TESTING PURPOSES ON OUR 198 IMAGES ONLY
+############################################
+def dispatchForEval(ImageType, ImageSet, seg1,seg2,seg3):
+    #seg1,2,3 are the human marked groundtruths
     dim = ImageSet.shape
     M = dim[0]
     N = dim[1]
@@ -91,92 +93,54 @@ def dispatchForEval321(ImageType,ImageSet, seg1_321,seg2_321,seg3_321):
     eval  = np.zeros((numImages,3))
     
     for i in range(0,numImages):
-        print('image count 321:')
-        print(i)
-        eval[i][0] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg1_321[:,:,i])
-        eval[i][1] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg2_321[:,:,i])
-        eval[i][2] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg3_321[:,:,i])
-    
-    return eval
-
-
-def dispatchForEval481(ImageType, ImageSet, seg1_481,seg2_481,seg3_481):
-    
-    dim = ImageSet.shape
-    M = dim[0]
-    N = dim[1]
-    numImages = dim[2]
-    #output
-    eval  = np.zeros((numImages,3))
-    
-    for i in range(0,numImages):
-        print('image count 481:')
-        print(i)
-        eval[i][0] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg1_481[:,:,i])
-        eval[i][1] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg2_481[:,:,i])
-        eval[i][2] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg3_481[:,:,i])
+        eval[i][0] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg1[:,:,i])
+        eval[i][1] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg2[:,:,i])
+        eval[i][2] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg3[:,:,i])
 
     return eval
 
+############################################
+#FOR TESTING PURPOSES ON OUR 198 IMAGES ONLY
+############################################
+def evaluate(ImageType):
+    
+    if imageType == 'RGB':
+        
+        #loading cluastering algorithm's output
+        kmeans_RGB_321 = np.load('./images/ClusterIm321_MyKmeans_CCIm.npy')
+        fcm_RGB_321 = np.load('./images/ClusterIm321_FCM_CCIm.npy')
+        som_RGB_321 = np.load('./images/ClusterIm321_MySOM_CCIm.npy')
+        gmm_RGB_321 = np.load('./images/ClusterIm321_GMM_CCIm.npy')
+        spectral_RGB_321 = np.load('./images/ClusterIm321_MySpectral_CCIm.npy')
+        
+        kmeans_RGB_481 = np.load('./images/ClusterIm481_MyKmeans_CCIm.npy')
+        fcm_RGB_481 = np.load('./images/ClusterIm481_FCM_CCIm.npy')
+        som_RGB_481 = np.load('./images/ClusterIm481_MySOM_CCIm.npy')
+        gmm_RGB_481 = np.load('./images/ClusterIm481_GMM_CCIm.npy')
+        spectral_RGB_481 = np.load('./images/ClusterIm481_MySpectral_CCIm.npy')
+        
+        seg1_321 = np.load('./images/Seg1_321.npy')
+        seg2_321 = np.load('./images/Seg2_321.npy')
+        seg3_321 = np.load('./images/Seg3_321.npy')
+        
+        seg1_481 = np.load('./images/Seg1_481.npy')
+        seg2_481 = np.load('./images/Seg2_481.npy')
+        seg3_481 = np.load('./images/Seg3_481.npy')
+        
+        #dispatching for evaluation
+        np.save('./evals/rgb/kmeans_321_rgb.npy', dispatchForEval(ImageType,kmeans_RGB_321,seg1_321,seg2_321,seg3_321))
+        np.save('./evals/rgb/fcm_321_rgb.npy', dispatchForEval(imageType,fcm_RGB_321,seg1_321,seg2_321,seg3_321))
+        np.save('./evals/rgb/som_321_rgb.npy', dispatchForEval(imageType,som_RGB_321,seg1_321,seg2_321,seg3_321))
+        np.save('./evals/rgb/gmm_321_rgb.npy', dispatchForEval(imageType,gmm_RGB_321,seg1_321,seg2_321,seg3_321))
+        np.save('./evals/rgb/spectral_321_rgb.npy', dispatchForEval(imageType,spectral_RGB_321,seg1_321,seg2_321,seg3_321))
+        np.save('./evals/rgb/kmeans_481_rgb.npy', dispatchForEval(imageType,kmeans_RGB_481, seg1_481,seg2_481,seg3_481))
+        np.save('./evals/rgb/fcm_481_rgb.npy', dispatchForEval(imageType,fcm_RGB_481, seg1_481,seg2_481,seg3_481))
+        np.save('./evals/rgb/som_481_rgb.npy', dispatchForEval(imageType,som_RGB_481, seg1_481,seg2_481,seg3_481))
+        np.save('./evals/rgb/gmm_481_rgb.npy', dispatchForEval(imageType,gmm_RGB_481, seg1_481,seg2_481,seg3_481))
+        np.save('./evals/rgb/spectral_481_rgb.npy', dispatchForEval(imageType,spectral_RGB_481, seg1_481,seg2_481,seg3_481))
 
 def main():
-    kmeans_RGB_321 = np.load('./images/ClusterIm321_MyKmeans_CCIm.npy')
-#    print(kmeans_RGB_321[:,:,0].shape)
-#    fcm_RGB_321 = np.load('./images/ClusterIm321_FCM_CCIm.npy')
-#    som_RGB_321 = np.load('./images/ClusterIm321_MySOM_CCIm.npy')
-#    gmm_RGB_321 = np.load('./images/ClusterIm321_GMM_CCIm.npy')
-#    spectral_RGB_321 = np.load('./images/ClusterIm321_MySpectral_CCIm.npy')
-#
-#    kmeans_RGB_481 = np.load('./images/ClusterIm481_MyKmeans_CCIm.npy')
-#    fcm_RGB_481 = np.load('./images/ClusterIm481_FCM_CCIm.npy')
-#    som_RGB_481 = np.load('./images/ClusterIm481_MySOM_CCIm.npy')
-#    gmm_RGB_481 = np.load('./images/ClusterIm481_GMM_CCIm.npy')
-#    spectral_RGB_481 = np.load('./images/ClusterIm481_MySpectral_CCIm.npy')
-
-    seg1_321 = np.load('./images/Seg1_321.npy')
-    seg2_321 = np.load('./images/Seg2_321.npy')
-    seg3_321 = np.load('./images/Seg3_321.npy')
-    
-#    print(seg1_321[:,:,0].shape)
-#    print(seg2_321[:,:,0].shape)
-#    print(seg3_321[:,:,0].shape)
-
-    seg1_481 = np.load('./images/Seg1_481.npy')
-    seg2_481 = np.load('./images/Seg2_481.npy')
-    seg3_481 = np.load('./images/Seg3_481.npy')
-
-    count =1
-    np.save('./evals/rgb/kmeans_321_rgb.npy', dispatchForEval321('RGB',kmeans_RGB_321,seg1_321,seg2_321,seg3_321))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/fcm_321_rgb.npy', dispatchForEval321('RGB',fcm_RGB_321,seg1_321,seg2_321,seg3_321))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/som_321_rgb.npy', dispatchForEval321('RGB',som_RGB_321,seg1_321,seg2_321,seg3_321))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/gmm_321_rgb.npy', dispatchForEval321('RGB',gmm_RGB_321,seg1_321,seg2_321,seg3_321))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/spectral_321_rgb.npy', dispatchForEval321('RGB',spectral_RGB_321,seg1_321,seg2_321,seg3_321))
-    print(count)
-    count=count+1
-
-    np.save('./evals/rgb/kmeans_481_rgb.npy', dispatchForEval481('RGB',kmeans_RGB_481, seg1_481,seg2_481,seg3_481))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/fcm_481_rgb.npy', dispatchForEval481('RGB',fcm_RGB_481, seg1_481,seg2_481,seg3_481))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/som_481_rgb.npy', dispatchForEval481('RGB',som_RGB_481, seg1_481,seg2_481,seg3_481))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/gmm_481_rgb.npy', dispatchForEval481('RGB',gmm_RGB_481, seg1_481,seg2_481,seg3_481))
-    print(count)
-    count=count+1
-    np.save('./evals/rgb/spectral_481_rgb.npy', dispatchForEval481('RGB',spectral_RGB_481, seg1_481,seg2_481,seg3_481))
-    print(count)
-    count=count+1
+    evaluate()
 
 #mat_contents = sio.loadmat('./images/ClusterIm321_FCM_CCIm.npy')
 #    ground_truth = mat_contents['PaviaGrTruth']
