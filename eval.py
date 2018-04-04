@@ -65,10 +65,8 @@ def MyClustEvalRGB10(CCIm, GroundTruth):
     return OCE(GroundTruth,CCIm)
 
 def MyClustEvalHyper10(ClusterIM, GroundTruth):
-    #need to fix ground truth mask
-    GroundTruthMask=sio.loadmat('/home/ani2404/Desktop/mlproject1/PaviaGrTruthMask.mat')
-    #print ClusterIM
-    ClusterIM = ClusterIM*GroundTruthMask['PaviaGrTruthMask']
+    #need to fix ground truth mask multiplication
+    #TODO, we don't know if the input will already be multiplied
     # print ClusterIM
     return OCE(GroundTruth,ClusterIM)
 
@@ -77,8 +75,10 @@ def MyMaritnIndex(ImageType,LabelImage, GroundTruth):
     if (ImageType == 'RGB'):
         #Need to determine if the input is ClusterIM or CCIm, if
         return MyClustEvalRGB10(LabelImage,GroundTruth)
-    else:
+    elif (ImageType == 'Hyper'):
         return MyClustEvalHyper10(LabelImage,GroundTruth)
+    else:
+        raise ValueError('Wrong imageType entered')
 
 ############################################
 #FOR TESTING PURPOSES ON OUR 198 IMAGES ONLY
@@ -102,51 +102,98 @@ def dispatchForEval(ImageType, ImageSet, seg1,seg2,seg3):
 ############################################
 #FOR TESTING PURPOSES ON OUR 198 IMAGES ONLY
 ############################################
-def evaluate(ImageType):
+def batchEvaluateRGB():
+ 
+    #loading cluastering algorithm's output
+    kmeans_RGB_321 = np.load('./images/ClusterIm321_MyKmeans_CCIm.npy')
+    fcm_RGB_321 = np.load('./images/ClusterIm321_FCM_CCIm.npy')
+    som_RGB_321 = np.load('./images/ClusterIm321_MySOM_CCIm.npy')
+    gmm_RGB_321 = np.load('./images/ClusterIm321_GMM_CCIm.npy')
+    spectral_RGB_321 = np.load('./images/ClusterIm321_MySpectral_CCIm.npy')
     
-    if imageType == 'RGB':
-        
-        #loading cluastering algorithm's output
-        kmeans_RGB_321 = np.load('./images/ClusterIm321_MyKmeans_CCIm.npy')
-        fcm_RGB_321 = np.load('./images/ClusterIm321_FCM_CCIm.npy')
-        som_RGB_321 = np.load('./images/ClusterIm321_MySOM_CCIm.npy')
-        gmm_RGB_321 = np.load('./images/ClusterIm321_GMM_CCIm.npy')
-        spectral_RGB_321 = np.load('./images/ClusterIm321_MySpectral_CCIm.npy')
-        
-        kmeans_RGB_481 = np.load('./images/ClusterIm481_MyKmeans_CCIm.npy')
-        fcm_RGB_481 = np.load('./images/ClusterIm481_FCM_CCIm.npy')
-        som_RGB_481 = np.load('./images/ClusterIm481_MySOM_CCIm.npy')
-        gmm_RGB_481 = np.load('./images/ClusterIm481_GMM_CCIm.npy')
-        spectral_RGB_481 = np.load('./images/ClusterIm481_MySpectral_CCIm.npy')
-        
-        seg1_321 = np.load('./images/Seg1_321.npy')
-        seg2_321 = np.load('./images/Seg2_321.npy')
-        seg3_321 = np.load('./images/Seg3_321.npy')
-        
-        seg1_481 = np.load('./images/Seg1_481.npy')
-        seg2_481 = np.load('./images/Seg2_481.npy')
-        seg3_481 = np.load('./images/Seg3_481.npy')
-        
-        #dispatching for evaluation
-        np.save('./evals/rgb/kmeans_321_rgb.npy', dispatchForEval(ImageType,kmeans_RGB_321,seg1_321,seg2_321,seg3_321))
-        np.save('./evals/rgb/fcm_321_rgb.npy', dispatchForEval(imageType,fcm_RGB_321,seg1_321,seg2_321,seg3_321))
-        np.save('./evals/rgb/som_321_rgb.npy', dispatchForEval(imageType,som_RGB_321,seg1_321,seg2_321,seg3_321))
-        np.save('./evals/rgb/gmm_321_rgb.npy', dispatchForEval(imageType,gmm_RGB_321,seg1_321,seg2_321,seg3_321))
-        np.save('./evals/rgb/spectral_321_rgb.npy', dispatchForEval(imageType,spectral_RGB_321,seg1_321,seg2_321,seg3_321))
-        np.save('./evals/rgb/kmeans_481_rgb.npy', dispatchForEval(imageType,kmeans_RGB_481, seg1_481,seg2_481,seg3_481))
-        np.save('./evals/rgb/fcm_481_rgb.npy', dispatchForEval(imageType,fcm_RGB_481, seg1_481,seg2_481,seg3_481))
-        np.save('./evals/rgb/som_481_rgb.npy', dispatchForEval(imageType,som_RGB_481, seg1_481,seg2_481,seg3_481))
-        np.save('./evals/rgb/gmm_481_rgb.npy', dispatchForEval(imageType,gmm_RGB_481, seg1_481,seg2_481,seg3_481))
-        np.save('./evals/rgb/spectral_481_rgb.npy', dispatchForEval(imageType,spectral_RGB_481, seg1_481,seg2_481,seg3_481))
+    kmeans_RGB_481 = np.load('./images/ClusterIm481_MyKmeans_CCIm.npy')
+    fcm_RGB_481 = np.load('./images/ClusterIm481_FCM_CCIm.npy')
+    som_RGB_481 = np.load('./images/ClusterIm481_MySOM_CCIm.npy')
+    gmm_RGB_481 = np.load('./images/ClusterIm481_GMM_CCIm.npy')
+    spectral_RGB_481 = np.load('./images/ClusterIm481_MySpectral_CCIm.npy')
+    
+    seg1_321 = np.load('./images/Seg1_321.npy')
+    seg2_321 = np.load('./images/Seg2_321.npy')
+    seg3_321 = np.load('./images/Seg3_321.npy')
+    
+    seg1_481 = np.load('./images/Seg1_481.npy')
+    seg2_481 = np.load('./images/Seg2_481.npy')
+    seg3_481 = np.load('./images/Seg3_481.npy')
+    
+    imageType = 'RGB'
+    #dispatching for evaluation
+    np.save('./evals/rgb/kmeans_321_rgb.npy', dispatchForEval(imageType,kmeans_RGB_321,seg1_321,seg2_321,seg3_321))
+    np.save('./evals/rgb/fcm_321_rgb.npy', dispatchForEval(imageType,fcm_RGB_321,seg1_321,seg2_321,seg3_321))
+    np.save('./evals/rgb/som_321_rgb.npy', dispatchForEval(imageType,som_RGB_321,seg1_321,seg2_321,seg3_321))
+    np.save('./evals/rgb/gmm_321_rgb.npy', dispatchForEval(imageType,gmm_RGB_321,seg1_321,seg2_321,seg3_321))
+    np.save('./evals/rgb/spectral_321_rgb.npy', dispatchForEval(imageType,spectral_RGB_321,seg1_321,seg2_321,seg3_321))
+    np.save('./evals/rgb/kmeans_481_rgb.npy', dispatchForEval(imageType,kmeans_RGB_481, seg1_481,seg2_481,seg3_481))
+    np.save('./evals/rgb/fcm_481_rgb.npy', dispatchForEval(imageType,fcm_RGB_481, seg1_481,seg2_481,seg3_481))
+    np.save('./evals/rgb/som_481_rgb.npy', dispatchForEval(imageType,som_RGB_481, seg1_481,seg2_481,seg3_481))
+    np.save('./evals/rgb/gmm_481_rgb.npy', dispatchForEval(imageType,gmm_RGB_481, seg1_481,seg2_481,seg3_481))
+    np.save('./evals/rgb/spectral_481_rgb.npy', dispatchForEval(imageType,spectral_RGB_481, seg1_481,seg2_481,seg3_481))
+
+
+############################################
+#FOR TESTING PURPOSES ON OUR 198 IMAGES ONLY
+############################################
+def batchEvaluateHyper():
+    
+    #loading pavia
+    mat_contents = sio.loadmat('./images/hyper/PaviaGrTruth.mat')
+    ground_truth = mat_contents['PaviaGrTruth']
+    GroundTruthMask = sio.loadmat('./images/hyper/PaviaGrTruthMask.mat')
+    GroundTruthMask = GroundTruthMask['PaviaGrTruthMask']
+    
+    #kmeans
+    ClusterIm = np.load('./images/hyper/P_IHYPER_Kmeans.npy')
+    ClusterIm = ClusterIm*GroundTruthMask
+    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    print('kmeans')
+    print(res)
+    
+    #fcm
+    ClusterIm = np.load('./images/hyper/P_IHYPER_FCM.npy')
+    ClusterIm = ClusterIm*GroundTruthMask
+    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    print('fcm')
+    print(res)
+    
+    #som
+    ClusterIm = np.load('./images/hyper/P_IHYPER_FCM.npy')
+    ClusterIm = ClusterIm*GroundTruthMask
+    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    print('som')
+    print(res)
+    
+    #gmm
+    ClusterIm = np.load('./images/hyper/P_IHYPER_GMM.npy')
+    ClusterIm = ClusterIm*GroundTruthMask
+    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    print('gmm')
+    print(res)
+    
+    #spectral
+    ClusterIm = np.load('./images/hyper/P_IHYPER_Spectral.npy')
+    ClusterIm = ClusterIm*GroundTruthMask
+    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    print('gmm')
+    print(res)
 
 def main():
-    evaluate()
+    
+    #RGB batch evaluation
+    #  batchEvaluateRGB()
 
-#mat_contents = sio.loadmat('./images/ClusterIm321_FCM_CCIm.npy')
-#    ground_truth = mat_contents['PaviaGrTruth']
-#    mat_contents = sio.loadmat('PaviaGrTruthMask.mat')
-#    label_image = mat_contents['ClusterIm']
-#    print MyMaritnIndex('Hyper',label_image,ground_truth)
+    #Hyper batch evaluation
+    #  batchEvaluateHyper()
+
+
 
 if __name__ == '__main__':
     main()
