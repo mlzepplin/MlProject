@@ -151,7 +151,7 @@ def MyClust10(Im, Algorithm, ImType, NumClusts):
 
     if ImType == 'RGB':
         Im = bilateralFilter(Im, 80, 150, 150)
-        Im = medianBlur(Im,9)
+        #Im = medianBlur(Im,9)
     elif ImType != 'Hyper':
         raise ValueError(
             "Invalid ImType :" + ImType + ". Please provide either 'RGB' or 'Hyper'")
