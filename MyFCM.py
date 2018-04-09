@@ -4,7 +4,7 @@ import skfuzzy as fuzz
 from sklearn import metrics
 from sklearn.decomposition import PCA
 
-def MyFCM(Im, ImageType, k):
+def MyFCM10(Im, ImageType, k):
     if ImageType == 'Hyper':
         r, c = Im.shape[0:2]
         Im = np.reshape(Im, (r*c, Im.shape[2]))

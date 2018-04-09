@@ -348,7 +348,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 
-def MySOM(Im, ImageType, k):
+def MySOM10(Im, ImageType, k):
     if ImageType == 'Hyper':
         r, c = Im.shape[0:2]
         Im = np.reshape(Im, (r*c, Im.shape[2]))

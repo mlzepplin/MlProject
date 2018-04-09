@@ -3,7 +3,7 @@ from sklearn.cluster import KMeans
 from sklearn import metrics
 from sklearn.decomposition import PCA
 
-def MyKmeans(Im, ImageType, k):
+def MyKmeans10(Im, ImageType, MaxClusters):
 
     if ImageType == 'Hyper':
         r, c = Im.shape[0:2]
@@ -23,8 +23,8 @@ def MyKmeans(Im, ImageType, k):
                 data[n, :] = Im[i, j, :]
 
     metric = []
-    for i1 in range(2,k+1):
-        kmeans = KMeans(n_clusters=i1)
+    for numclust in range(2, MaxClusters+1):
+        kmeans = KMeans(n_clusters=numclust)
         kmeans.fit(data)
         labels = kmeans.labels_
         metric.append(metrics.calinski_harabaz_score(data, labels))

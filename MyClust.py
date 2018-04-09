@@ -6,14 +6,9 @@
 # from MyClust import MyClust
 # ClusterIm, CCIm = MyClust(Im, Algorithm='GMM', ImType='RGB',NumClusts=8)
 
-
-import scipy.io as sio
-import numpy as np
 from cv2 import medianBlur
 from cv2 import bilateralFilter
-import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
+
 
 
 from MyFCM import *
@@ -57,9 +52,9 @@ def convertToCCIm(I):
                     else:
                         upbound=i-1
                         lowbound=i+1
-                    
+
                     l3neib = l3[upbound:(lowbound+1),leftbound:(rightbound+1)]
-                    c0 = Counter(l3neib.flatten()).most_common(2)  
+                    c0 = Counter(l3neib.flatten()).most_common(2)
                     if c0[0][0] == 0:
                         if len(c0) > 1:
                             l3[i,j] = c0[1][0]
@@ -134,7 +129,18 @@ def convertToCCIm(I):
 
 
 
-def MyClust(Im, Algorithm, ImType, NumClusts):
+def MyClust10(Im, Algorithm, ImType, NumClusts):
+
+    #Type checking for safety
+    if(isinstance(Algorithm,str) == False):
+        raise ValueError( "Algorithm should be of type string. Please provide either 'Kmeans' or 'SOM' or 'FCM' or 'Spectral' or 'GMM'")
+    elif (isinstance(ImType,str) == False):
+        raise ValueError("ImType should be of type string. Please provide either 'RGB' or 'Hyper'")
+    elif (isinstance(Im, np.ndarray) == False):
+        raise ValueError("Im should be a numpy array. Please provide numpy array of dimension(r,c,featureSize)")
+    elif len(Im.shape) != 3:
+        raise ValueError("Im shape is invalid. Please provide numpy array of shape (rows,col,featureSize)")
+
     r, c = Im.shape[0:2]
     N = r * c
     numFeature = Im.shape[2]
@@ -144,20 +150,26 @@ def MyClust(Im, Algorithm, ImType, NumClusts):
         NumClusts = 0.05 * N
 
     if ImType == 'RGB':
-        Im_tempt = bilateralFilter(Im, 80, 150, 150)
-        Im = medianBlur(Im_tempt,9)
+        Im = bilateralFilter(Im, 80, 150, 150)
+        Im = medianBlur(Im,9)
+    elif ImType != 'Hyper':
+        raise ValueError(
+            "Invalid ImType :" + ImType + ". Please provide either 'RGB' or 'Hyper'")
 
     
     if Algorithm == 'Kmeans':
-        ClusterIm = MyKmeans(Im, ImType, NumClusts)
+        ClusterIm = MyKmeans10(Im, ImType, NumClusts)
     elif Algorithm == 'SOM':
-        ClusterIm = MySOM(Im, ImType, NumClusts)
+        ClusterIm = MySOM10(Im, ImType, NumClusts)
     elif Algorithm == 'FCM':
-        ClusterIm = MyFCM(Im, ImType, NumClusts)
+        ClusterIm = MyFCM10(Im, ImType, NumClusts)
     elif Algorithm == 'Spectral':
-        ClusterIm = MySpectral(Im, ImType, NumClusts)
+        ClusterIm = MySpectral10(Im, ImType, NumClusts)
     elif Algorithm == 'GMM':
-        ClusterIm = MyGMM(Im, ImType, NumClusts)
+        ClusterIm = MyGMM10(Im, ImType, NumClusts)
+    else:
+        raise ValueError("Invalid Algorithm name:"+Algorithm +". Please provide either 'Kmeans' or 'SOM' or 'FCM' or 'Spectral' or 'GMM'")
+
 
     if ImType == 'RGB':
         CCIm = convertToCCIm(ClusterIm)

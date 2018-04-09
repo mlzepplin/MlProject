@@ -4,7 +4,7 @@ from sklearn import metrics
 import cv2
 from sklearn.decomposition import PCA
 
-def MySpectral(Im, ImType, k):
+def MySpectral10(Im, ImType, k):
 
     if ImType == 'Hyper':
         r, c = Im.shape[0:2]

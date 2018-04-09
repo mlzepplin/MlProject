@@ -71,14 +71,26 @@ def MyClustEvalHyper10(ClusterIM, GroundTruth):
     return OCE(GroundTruth,ClusterIM)
 
 
-def MyMaritnIndex(ImageType,LabelImage, GroundTruth):
+def MyMaritnIndex10(ImageType,LabelImage, GroundTruth):
+    #Type checking for safety
+    if (isinstance(ImageType,str) == False):
+        raise ValueError("ImType should be of type string. Please provide either 'RGB' or 'Hyper'")
+    elif (isinstance(LabelImage, np.ndarray) == False):
+        raise ValueError("LabelImage should be a numpy array. Please provide numpy array of dimension(r,c,featureSize)")
+    elif (isinstance(GroundTruth, np.ndarray) == False):
+        raise ValueError("GroundTruth should be a numpy array. Please provide numpy array of dimension(r,c,featureSize)")
+    elif len(LabelImage.shape) != 3:
+        raise ValueError("LabelImage shape is invalid. Please provide numpy array of shape (rows,col,featureSize)")
+    elif len(GroundTruth.shape) != 3:
+        raise ValueError("GroundTruth shape is invalid. Please provide numpy array of shape (rows,col,featureSize)")
+
     if (ImageType == 'RGB'):
         #Need to determine if the input is ClusterIM or CCIm, if
         return MyClustEvalRGB10(LabelImage,GroundTruth)
     elif (ImageType == 'Hyper'):
         return MyClustEvalHyper10(LabelImage,GroundTruth)
     else:
-        raise ValueError('Wrong imageType entered')
+        raise ValueError("Wrong imageType entered. Please provide either 'RGB' or 'Hyper'")
 
 ############################################
 #FOR TESTING PURPOSES ON OUR 198 IMAGES ONLY
@@ -93,9 +105,9 @@ def dispatchForEval(ImageType, ImageSet, seg1,seg2,seg3):
     eval  = np.zeros((numImages,3))
     
     for i in range(0,numImages):
-        eval[i][0] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg1[:,:,i])
-        eval[i][1] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg2[:,:,i])
-        eval[i][2] = MyMaritnIndex(ImageType,ImageSet[:,:,i],seg3[:,:,i])
+        eval[i][0] = MyMaritnIndex10(ImageType,ImageSet[:,:,i],seg1[:,:,i])
+        eval[i][1] = MyMaritnIndex10(ImageType,ImageSet[:,:,i],seg2[:,:,i])
+        eval[i][2] = MyMaritnIndex10(ImageType,ImageSet[:,:,i],seg3[:,:,i])
 
     return eval
 
@@ -153,45 +165,45 @@ def batchEvaluateHyper():
     #kmeans
     ClusterIm = np.load('./images/hyper/P_IHYPER_Kmeans.npy')
     ClusterIm = ClusterIm*GroundTruthMask
-    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    res = MyMaritnIndex10('Hyper',ClusterIm,ground_truth)
     print('kmeans')
     print(res)
     
     #fcm
     ClusterIm = np.load('./images/hyper/P_IHYPER_FCM.npy')
     ClusterIm = ClusterIm*GroundTruthMask
-    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    res = MyMaritnIndex10('Hyper',ClusterIm,ground_truth)
     print('fcm')
     print(res)
     
     #som
     ClusterIm = np.load('./images/hyper/P_IHYPER_FCM.npy')
     ClusterIm = ClusterIm*GroundTruthMask
-    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    res = MyMaritnIndex10('Hyper',ClusterIm,ground_truth)
     print('som')
     print(res)
     
     #gmm
     ClusterIm = np.load('./images/hyper/P_IHYPER_GMM.npy')
     ClusterIm = ClusterIm*GroundTruthMask
-    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    res = MyMaritnIndex10('Hyper',ClusterIm,ground_truth)
     print('gmm')
     print(res)
     
     #spectral
     ClusterIm = np.load('./images/hyper/P_IHYPER_Spectral.npy')
     ClusterIm = ClusterIm*GroundTruthMask
-    res = MyMaritnIndex('Hyper',ClusterIm,ground_truth)
+    res = MyMaritnIndex10('Hyper',ClusterIm,ground_truth)
     print('gmm')
     print(res)
 
 def main():
-    
+    print "Don't call these main, nothing useful, the functions MyMartinIndex10 needs to be called from this script"
     #RGB batch evaluation
-    #  batchEvaluateRGB()
+    #batchEvaluateRGB()
 
     #Hyper batch evaluation
-    #  batchEvaluateHyper()
+    #batchEvaluateHyper()
 
 
 

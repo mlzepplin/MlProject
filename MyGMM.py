@@ -3,7 +3,7 @@ from sklearn.mixture import GaussianMixture
 import numpy as np
 from sklearn.decomposition import PCA
 
-def MyGMM(Im, ImageType, k):
+def MyGMM10(Im, ImageType, k):
     if ImageType == 'Hyper':
         r, c = Im.shape[0:2]
         Im = np.reshape(Im, (r*c, Im.shape[2]))
