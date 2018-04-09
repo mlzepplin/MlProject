@@ -79,10 +79,6 @@ def MyMaritnIndex10(ImageType,LabelImage, GroundTruth):
         raise ValueError("LabelImage should be a numpy array. Please provide numpy array of dimension(r,c,featureSize)")
     elif (isinstance(GroundTruth, np.ndarray) == False):
         raise ValueError("GroundTruth should be a numpy array. Please provide numpy array of dimension(r,c,featureSize)")
-    elif len(LabelImage.shape) != 3:
-        raise ValueError("LabelImage shape is invalid. Please provide numpy array of shape (rows,col,featureSize)")
-    elif len(GroundTruth.shape) != 3:
-        raise ValueError("GroundTruth shape is invalid. Please provide numpy array of shape (rows,col,featureSize)")
 
     if (ImageType == 'RGB'):
         #Need to determine if the input is ClusterIM or CCIm, if
